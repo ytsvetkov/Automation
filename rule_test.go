@@ -25,11 +25,8 @@ func TestErrorNewRule(t *testing.T) {
 
 func TestNewRules(t *testing.T) {
 	str := "pqrst"
-	rules, err := NewRules("a", str, "b")
-	if err != nil {
-		t.Error("Something is wrong with the rules")
-		t.Error(err)
-	}
+	rules := NewRules("a", str, "b")
+
 	for i, rule := range rules {
 		if rule.GetTransitionRule() != string(str[i]) {
 			t.Error("There is a wrong rule! Expected: (a)-" + string(str[i]) + "-(b)" + " .Got: " + rule.String())

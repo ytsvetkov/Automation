@@ -15,13 +15,29 @@ func NewRule(from, with, to string) (*Rule, error) {
 	return nil, errors.New("Too long transition!")
 }
 
-func NewRules(from, with, to string) ([]*Rule, error) {
+func NewRules(from, with, to string) []*Rule {
 	rules := make([]*Rule, 0, len(with))
 	for _, symbol := range with {
 		rule, _ := NewRule(from, string(symbol), to)
 		rules = append(rules, rule)
 	}
-	return rules, nil
+	return rules
+}
+
+func (r *Rule) SetStartingState(label string) {
+	r.from = label
+}
+
+func (r *Rule) SetTransitionRule(symbol string) bool {
+	if len(symbol) >= 2 {
+		return false
+	}
+	r.with = symbol
+	return true
+}
+
+func (r *Rule) SetEndingState(label string) {
+	r.to = label
 }
 
 func (r *Rule) GetStartingState() string {
@@ -38,4 +54,8 @@ func (r *Rule) GetEndingState() string {
 
 func (r *Rule) String() string {
 	return "(" + r.from + ")-" + r.with + "-(" + r.to + ")"
+}
+
+func (r *Rule) New() *Rule {
+	return &Rule{from: r.from, with: r.with, to: r.to}
 }
