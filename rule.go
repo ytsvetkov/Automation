@@ -1,61 +1,113 @@
 package Automation
 
-import "errors"
-
 type Rule struct {
 	from string
 	with string
 	to   string
 }
 
-func NewRule(from, with, to string) (*Rule, error) {
-	if len(with) <= 1 {
-		return &Rule{from: from, with: with, to: to}, nil
-	}
-	return nil, errors.New("Too long transition!")
+func NewRule(from, with, to string) Rule {
+	return Rule{from: from, with: with, to: to}
 }
 
-func NewRules(from, with, to string) []*Rule {
-	rules := make([]*Rule, 0, len(with))
-	for _, symbol := range with {
-		rule, _ := NewRule(from, string(symbol), to)
-		rules = append(rules, rule)
+func NewRules(from, with, to string) []Rule {
+	rules := make([]Rule, 0, len(with))
+	for _, char := range with {
+		rules = append(rules, NewRule(from, string(char), to))
+	}
+	return rules
+}
+func (r Rule) String() string {
+	return "(" + r.from + ")-" + r.with + "-(" + r.to + ")"
+}
+
+func (r Rule) GetFrom() string {
+	return r.from
+}
+
+func (r Rule) GetWith() string {
+	return r.with
+}
+
+func (r Rule) GetTo() string {
+	return r.to
+}
+
+func (r Rule) SetFrom(from string) {
+	r.from = from
+}
+
+func (r Rule) SetWith(with string) {
+	if len(with) <= 1 {
+		r.with = with
+	}
+}
+
+func (r Rule) SetTo(to string) {
+	r.to = to
+}
+
+type PRule struct {
+	from string
+	with string
+	to   string
+	pop  string
+	push string
+}
+
+func NewPRule(from, with, pop, to, push string) PRule {
+	return PRule{from: from, with: with, to: to, pop: pop, push: push}
+}
+
+func NewPRules(from, with, to, pop, push string) []PRule {
+	rules := make([]PRule, 0, len(with))
+	for _, char := range with {
+		rules = append(rules, NewPRule(from, string(char), to, push, pop))
 	}
 	return rules
 }
 
-func (r *Rule) SetStartingState(label string) {
-	r.from = label
+func (p PRule) String() string {
+	return "(" + p.from + ")-" + p.with + "-|*" + p.pop + "*|" + "(" + p.to + ")<" + p.push + ">"
 }
 
-func (r *Rule) SetTransitionRule(symbol string) bool {
-	if len(symbol) >= 2 {
-		return false
+func (p PRule) GetFrom() string {
+	return p.from
+}
+
+func (p PRule) GetWith() string {
+	return p.with
+}
+
+func (p PRule) GetTo() string {
+	return p.to
+}
+
+func (p PRule) GetPush() string {
+	return p.push
+}
+
+func (p PRule) GetPop() string {
+	return p.pop
+}
+
+func (p PRule) SetFrom(from string) {
+	p.from = from
+}
+
+func (p PRule) SetWith(with string) {
+	if len(with) <= 1 {
+		p.with = with
 	}
-	r.with = symbol
-	return true
 }
 
-func (r *Rule) SetEndingState(label string) {
-	r.to = label
+func (p PRule) SetTo(to string) {
+	p.to = to
 }
 
-func (r *Rule) GetStartingState() string {
-	return r.from
+func (p PRule) SetPush(push string) {
+	p.push = push
 }
-
-func (r *Rule) GetTransitionRule() string {
-	return r.with
-}
-
-func (r *Rule) GetEndingState() string {
-	return r.to
-}
-
-func (r *Rule) String() string {
-	return "(" + r.from + ")-" + r.with + "-(" + r.to + ")"
-}
-
-func (r *Rule) New() *Rule {
-	return &Rule{from: r.from, with: r.with, to: r.to}
+func (p PRule) SetPop(pop string) {
+	p.pop = pop
 }
