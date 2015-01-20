@@ -49,14 +49,15 @@ func (s Set) Cardinality() int {
 	return len(s)
 }
 
-func (s Set) Intersection(other Set) (set Set) {
+func (s Set) Intersection(other Set) Set {
+	set := NewSet()
 	for member, _ := range s {
 		set.Add(member)
 	}
 	for member, _ := range other {
 		set.Add(member)
 	}
-	return
+	return set
 }
 
 func (s Set) Clear() {

@@ -1,6 +1,6 @@
 package Automation
 
-func Union(auto1, auto2 RegularAutomata) NFA {
+func Union(auto1, auto2 RegularAutomata) *NFA {
 	start := auto1.GetStartStates()
 	start.AddSet(auto2.GetStartStates())
 
@@ -37,7 +37,7 @@ func Union(auto1, auto2 RegularAutomata) NFA {
 	return NewNFA(start, states, accept, reject, NewNRuleBook(rules))
 }
 
-func Concatenation(auto1, auto2 RegularAutomata) NFA {
+func Concatenation(auto1, auto2 RegularAutomata) *NFA {
 	start := auto1.GetStartStates()
 
 	states := NewSet()
@@ -64,7 +64,7 @@ func Concatenation(auto1, auto2 RegularAutomata) NFA {
 	return NewNFA(start, states, accept, reject, NewNRuleBook(rules))
 }
 
-func PositiveClosure(auto RegularAutomata) NFA {
+func PositiveClosure(auto RegularAutomata) *NFA {
 	rules := []Rule{}
 	for _, acc := range auto.GetAcceptStates().Values() {
 		for _, start := range auto.GetStartStates().Values() {
@@ -76,10 +76,10 @@ func PositiveClosure(auto RegularAutomata) NFA {
 	return NewNFA(auto.GetStartStates(), auto.GetAllStates(), auto.GetAcceptStates(), auto.GetReject(), NewNRuleBook(rules))
 }
 
-// func Determinise(nfa NFA) DFA {
+// func Determinise(nfa *NFA) *DFA {
 
 // }
 
-// func Minimise(dfa DFA) DFA {
+// func Minimise(dfa *DFA) *DFA {
 
 // }

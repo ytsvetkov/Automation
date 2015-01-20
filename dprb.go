@@ -17,10 +17,10 @@ func (d DPRuleBook) AddRule(rule PRule) {
 		map3 := map[string]string{rule.GetTo(): rule.GetPush()}
 		map2 := map[string]map[string]string{rule.GetPop(): map3}
 		d[rule.GetFrom()][rule.GetWith()] = map2
-	} else if _, okk := d[rule.GetFrom()][rule.GetWith()][rule.GetPop()]; okk != false {
+	} else if _, okk := d[rule.GetFrom()][rule.GetWith()][rule.GetPop()]; okk == false {
 		map3 := map[string]string{rule.GetTo(): rule.GetPush()}
 		d[rule.GetFrom()][rule.GetWith()][rule.GetPop()] = map3
-	} else if _, okkk := d[rule.GetFrom()][rule.GetWith()][rule.GetPop()][rule.GetTo()]; okkk != false {
+	} else if _, okkk := d[rule.GetFrom()][rule.GetWith()][rule.GetPop()][rule.GetTo()]; okkk == false {
 		d[rule.GetFrom()][rule.GetWith()][rule.GetPop()][rule.GetTo()] = rule.GetPush()
 	}
 }
@@ -43,7 +43,7 @@ func (d DPRuleBook) String() string {
 		for with, rest2 := range rest {
 			for pop, rest3 := range rest2 {
 				for to, push := range rest3 {
-					str += "\t" + NewPRule(from, with, to, pop, push).String() + "\n"
+					str += "\t" + NewPRule(from, with, pop, to, push).String() + "\n"
 				}
 			}
 		}

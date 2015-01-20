@@ -9,27 +9,31 @@ type DFA struct {
 	reject  string
 }
 
-func NewDFA(start, reject string, states, accept Set, rules DRuleBook) DFA {
-	return DFA{start: start, current: start, reject: reject, states: states, accept: accept, rules: rules}
+func NewDFA(start, reject string, states, accept Set, rules DRuleBook) *DFA {
+	return &DFA{start: start, current: start, reject: reject, states: states, accept: accept, rules: rules}
 }
 
-func (d DFA) Accepting() bool {
+func (d *DFA) Accepting() bool {
 	return d.accept.Contains(d.current)
 }
 
-func (d DFA) Rejecting() bool {
-	return d.start == d.reject
+func (d *DFA) Rejecting() bool {
+	return d.current == d.reject
 }
 
-func (d DFA) ReadCharacter(char string) {
-	x := d.rules.GetFromState(char)
-	if len(x) < 1 {
-		d.current = d.reject
+func (d *DFA) ReadCharacter(char string) {
+	if d.Rejecting() {
+		return
 	}
-	d.current = x[0][1]
+	x := d.rules.GetFromTransition(d.current, char).Values()
+	if len(x) != 1 {
+		d.current = d.reject
+		return
+	}
+	d.current = x[0]
 }
 
-func (d DFA) ReadString(word string) {
+func (d *DFA) ReadString(word string) {
 	for _, char := range word {
 		if d.Rejecting() {
 			return
@@ -38,11 +42,11 @@ func (d DFA) ReadString(word string) {
 	}
 }
 
-func (d DFA) GetAllStates() Set {
+func (d *DFA) GetAllStates() Set {
 	return d.states
 }
 
-func (d DFA) GetAllTransitionsFor(from, with string) (set Set) {
+func (d *DFA) GetAllTransitionsFor(from, with string) (set Set) {
 	if tran, ok := d.rules[from]; ok != false {
 		if to, okk := tran[with]; okk != false {
 			set.Add(to)
@@ -52,7 +56,7 @@ func (d DFA) GetAllTransitionsFor(from, with string) (set Set) {
 	return
 }
 
-func (d DFA) GetAllEnds() (set Set) {
+func (d *DFA) GetAllEnds() (set Set) {
 	for _, b := range d.rules {
 		for _, j := range b {
 			set.Add(j)
@@ -61,24 +65,28 @@ func (d DFA) GetAllEnds() (set Set) {
 	return
 }
 
-func (d DFA) GetStartStates() Set {
+func (d *DFA) GetStartStates() Set {
 	start := NewSet()
 	start.Add(d.start)
 	return start
 }
 
-func (d DFA) GetAcceptStates() Set {
+func (d *DFA) GetAcceptStates() Set {
 	return d.accept
 }
 
-func (d DFA) GetReject() string {
+func (d *DFA) GetReject() string {
 	return d.reject
 }
 
-func (d DFA) GetAllRules() []Rule {
+func (d *DFA) GetAllRules() []Rule {
 	return d.rules.GetAllRules()
 }
 
-func (d DFA) GetFromState(from string) [][2]string {
+func (d *DFA) GetFromState(from string) [][2]string {
 	return d.rules.GetFromState(from)
+}
+
+func (d *DFA) GetCurrentState() string {
+	return d.current
 }

@@ -47,3 +47,15 @@ func (s *Stack) Peek() (value string, exists bool) {
 func NewStack() *Stack {
 	return new(Stack)
 }
+
+func (s *Stack) String() string {
+	ptr := s.top
+	var str string
+
+	for ptr != nil {
+		str += ptr.value + " "
+		ptr = ptr.next
+	}
+
+	return str
+}
