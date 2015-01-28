@@ -76,9 +76,83 @@ func PositiveClosure(auto RegularAutomata) *NFA {
 	return NewNFA(auto.GetStartStates(), auto.GetAllStates(), auto.GetAcceptStates(), auto.GetReject(), NewNRuleBook(rules))
 }
 
-// func Determinise(nfa *NFA) *DFA {
+func Determinise(nfa *NFA) *DFA {
+	startStates := nfa.GetStartStates()
+	start := startStates.String()
 
-// }
+	accept := NewSet()
+	states := NewSet()
+
+	alphabet := nfa.GetAlphabet().Values()
+	setStates := []Set{startStates}
+	finalised := []Set{}
+	table := make(map[string]map[string]Set)
+
+	for len(setStates) > 0 {
+		newSetState := setStates[0]
+
+		if len(setStates) > 1 {
+			setStates = setStates[1 : len(setStates)-1]
+		} else {
+			setStates = []Set{}
+		}
+
+		finalised = append(finalised, newSetState)
+
+		tran := make(map[string]Set)
+		for _, letter := range alphabet {
+			tran[letter] = NewSet()
+		}
+
+		for _, letter := range alphabet {
+			for _, state := range newSetState.Values() {
+				x := nfa.rules.GetRuleEnd(state, letter)
+				tran[letter].AddSet(x)
+
+				if nfa.GetAcceptStates().Intersection(x).Cardinality() > 0 {
+					accept.AddSet(x)
+				}
+			}
+		}
+
+		table[newSetState.String()] = tran
+		states.Add(newSetState.String())
+
+		for _, set := range tran {
+			if set.Cardinality() == 0 {
+				goto skip
+			}
+
+			for _, set2 := range finalised {
+				if set.Eq(set2) {
+					goto skip
+				}
+			}
+
+			for _, set2 := range setStates {
+				if set.Eq(set2) {
+					goto skip
+				}
+			}
+
+			setStates = append(setStates, set)
+		skip:
+		}
+	}
+
+	book := NewEmptyDRuleBook()
+	for from, trans := range table {
+		for with, to := range trans {
+			if to.Cardinality() == 0 {
+				continue
+			}
+			book.AddRule(NewRule(from, with, to.String()))
+		}
+	}
+
+	return NewDFA(start, nfa.GetReject(), states, accept, book)
+
+}
 
 // func Minimise(dfa *DFA) *DFA {
 

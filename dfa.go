@@ -65,6 +65,16 @@ func (d *DFA) GetAllEnds() (set Set) {
 	return
 }
 
+func (d *DFA) GetAlphabet() Set {
+	letters := NewSet()
+	for _, rest := range d.rules {
+		for letter := range rest {
+			letters.Add(letter)
+		}
+	}
+	return letters
+}
+
 func (d *DFA) GetStartStates() Set {
 	start := NewSet()
 	start.Add(d.start)

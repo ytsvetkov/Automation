@@ -11,14 +11,14 @@ type TuringMachine struct {
 	rules   TuringRoolBook
 }
 
-func (t TuringMachine) Step() {
+// func (t TuringMachine) Step() {
 
-}
+// }
 
-func (t TuringMachine) Run() {
+// func (t TuringMachine) Run() {
 
-}
+// }
 
-func (t TuringMachine) String() string {
+// func (t TuringMachine) String() string {
 
-}
+// }

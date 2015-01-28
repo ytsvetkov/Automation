@@ -15,6 +15,7 @@ type RegularAutomata interface {
 	ReadString(word string)
 	Accepting() bool
 	// String() string
+	GetAlphabet() Set
 	GetAllStates() Set
 	GetAllTransitionsFor(from, with string) Set
 	GetFromState(from string) [][2]string

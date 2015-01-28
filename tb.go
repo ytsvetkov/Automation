@@ -23,14 +23,14 @@ func (t TuringRoolBook) String() string {
 	return ""
 }
 
-func (t TuringRoolBook) GetFromState(from string) [][5]string {
-}
+// func (t TuringRoolBook) GetFromState(from string) [][5]string {
+// }
 
-func (t TuringRoolBook) GetRuleEnd(from, with, pop string) (result [][3]string) {
-}
+// func (t TuringRoolBook) GetRuleEnd(from, with, pop string) (result [][3]string) {
+// }
 
-func (t TuringRoolBook) GetFromTransition(from string) (set Set) {
-}
+// func (t TuringRoolBook) GetFromTransition(from string) (set Set) {
+// }
 
-func (t TuringRoolBook) GetAllRules() (rule []TRule) {
-}
+// func (t TuringRoolBook) GetAllRules() (rule []TRule) {
+// }

@@ -82,6 +82,16 @@ func (n *NFA) GetAllRules() []Rule {
 	return n.rules.GetAllRules()
 }
 
+func (n *NFA) GetAlphabet() Set {
+	letters := NewSet()
+	for _, rest := range n.rules {
+		for letter := range rest {
+			letters.Add(letter)
+		}
+	}
+	return letters
+}
+
 func (n *NFA) GetFromState(from string) [][2]string {
 	return n.rules.GetFromState(from)
 }

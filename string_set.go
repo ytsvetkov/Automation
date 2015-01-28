@@ -63,3 +63,36 @@ func (s Set) Intersection(other Set) Set {
 func (s Set) Clear() {
 	s = NewSet()
 }
+
+func (s Set) Eq(other Set) bool {
+	if s.Cardinality() != s.Cardinality() {
+		return false
+	}
+
+	var flag bool
+	for _, i := range s.Values() {
+		flag = false
+		for _, j := range other.Values() {
+			if i == j {
+				flag = true
+			}
+		}
+		if !flag {
+			return false
+		}
+	}
+
+	for _, i := range other.Values() {
+		flag = false
+		for _, j := range s.Values() {
+			if i == j {
+				flag = true
+			}
+		}
+		if !flag {
+			return false
+		}
+	}
+
+	return true
+}
