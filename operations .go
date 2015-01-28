@@ -1,5 +1,6 @@
 package Automation
 
+// Union of two finite automata
 func Union(auto1, auto2 RegularAutomata) *NFA {
 	start := auto1.GetStartStates()
 	start.AddSet(auto2.GetStartStates())
@@ -37,6 +38,7 @@ func Union(auto1, auto2 RegularAutomata) *NFA {
 	return NewNFA(start, states, accept, reject, NewNRuleBook(rules))
 }
 
+// Concatenation of two finite automata
 func Concatenation(auto1, auto2 RegularAutomata) *NFA {
 	start := auto1.GetStartStates()
 
@@ -64,6 +66,8 @@ func Concatenation(auto1, auto2 RegularAutomata) *NFA {
 	return NewNFA(start, states, accept, reject, NewNRuleBook(rules))
 }
 
+// Posotive closure of finite automata. If 'auto' can recognise
+// the language 'L', PositiveClosure(auto) recognises L*
 func PositiveClosure(auto RegularAutomata) *NFA {
 	rules := []Rule{}
 	for _, acc := range auto.GetAcceptStates().Values() {
@@ -76,6 +80,8 @@ func PositiveClosure(auto RegularAutomata) *NFA {
 	return NewNFA(auto.GetStartStates(), auto.GetAllStates(), auto.GetAcceptStates(), auto.GetReject(), NewNRuleBook(rules))
 }
 
+// Powerset construction to get determinised automata,
+// recognising the same language as the given NFA
 func Determinise(nfa *NFA) *DFA {
 	startStates := nfa.GetStartStates()
 	start := startStates.String()
@@ -154,6 +160,49 @@ func Determinise(nfa *NFA) *DFA {
 
 }
 
-// func Minimise(dfa *DFA) *DFA {
+// Brzozowski's algorithm for DFA minimization
+func Minimise(dfa *DFA) *DFA {
+	nfa1 := reverseAutomata(dfa)
+	dfa2 := Determinise(nfa1)
+	nfa3 := reverseAutomata(dfa2)
+	return Determinise(nfa3)
+}
 
-// }
+// Reversing all the edges, making the initial state an accept state,
+// and the accept states initial, to get an NFA for the reverse language.
+func reverseAutomata(dfa *DFA) *NFA {
+	accept := dfa.GetStartStates()
+	start := dfa.GetAcceptStates()
+	reject := dfa.reject
+
+	rules := dfa.GetAllRules()
+	book := NewEmptyNRuleBook()
+	for _, rule := range rules {
+		book.AddRule(NewRule(rule.GetTo(), rule.GetWith(), rule.GetFrom()))
+	}
+
+	return NewNFA(start, dfa.GetAllStates(), accept, reject, book)
+}
+
+func ExamDFA() *DFA {
+	rules := make([]Rule, 0)
+	rules = append(rules, NewRule("a", "0", "a"))
+	rules = append(rules, NewRule("a", "1", "b"))
+	rules = append(rules, NewRule("b", "0", "b"))
+	rules = append(rules, NewRule("b", "1", "a"))
+	rules = append(rules, NewRule("b", "2", "c"))
+	rules = append(rules, NewRule("a", "2", "c"))
+	rules = append(rules, NewRules("c", "012", "c")...)
+
+	states := NewSet()
+	states.Add("a")
+	states.Add("b")
+	states.Add("c")
+
+	acc := []string{"a", "b"}
+	accept := SetFromSlice(acc)
+
+	dfa := NewDFA("a", "c", states, accept, NewDRuleBook(rules))
+
+	return dfa
+}
