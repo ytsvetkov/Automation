@@ -69,7 +69,7 @@ func Concatenation(auto1, auto2 RegularAutomata) *NFA {
 // Posotive closure of finite automata. If 'auto' can recognise
 // the language 'L', PositiveClosure(auto) recognises L*
 func PositiveClosure(auto RegularAutomata) *NFA {
-	rules := []Rule{}
+	rules := []*Rule{}
 	for _, acc := range auto.GetAcceptStates().Values() {
 		for _, start := range auto.GetStartStates().Values() {
 			for _, tran := range auto.GetFromState(start) {
@@ -162,15 +162,15 @@ func Determinise(nfa *NFA) *DFA {
 
 // Brzozowski's algorithm for DFA minimization
 func Minimise(dfa *DFA) *DFA {
-	nfa1 := reverseAutomata(dfa)
+	nfa1 := ReverseAutomata(dfa)
 	dfa2 := Determinise(nfa1)
-	nfa3 := reverseAutomata(dfa2)
+	nfa3 := ReverseAutomata(dfa2)
 	return Determinise(nfa3)
 }
 
 // Reversing all the edges, making the initial state an accept state,
 // and the accept states initial, to get an NFA for the reverse language.
-func reverseAutomata(dfa *DFA) *NFA {
+func ReverseAutomata(dfa *DFA) *NFA {
 	accept := dfa.GetStartStates()
 	start := dfa.GetAcceptStates()
 	reject := dfa.reject
@@ -182,27 +182,4 @@ func reverseAutomata(dfa *DFA) *NFA {
 	}
 
 	return NewNFA(start, dfa.GetAllStates(), accept, reject, book)
-}
-
-func ExamDFA() *DFA {
-	rules := make([]Rule, 0)
-	rules = append(rules, NewRule("a", "0", "a"))
-	rules = append(rules, NewRule("a", "1", "b"))
-	rules = append(rules, NewRule("b", "0", "b"))
-	rules = append(rules, NewRule("b", "1", "a"))
-	rules = append(rules, NewRule("b", "2", "c"))
-	rules = append(rules, NewRule("a", "2", "c"))
-	rules = append(rules, NewRules("c", "012", "c")...)
-
-	states := NewSet()
-	states.Add("a")
-	states.Add("b")
-	states.Add("c")
-
-	acc := []string{"a", "b"}
-	accept := SetFromSlice(acc)
-
-	dfa := NewDFA("a", "c", states, accept, NewDRuleBook(rules))
-
-	return dfa
 }

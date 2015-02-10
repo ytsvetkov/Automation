@@ -1,12 +1,14 @@
 package Automation
 
+//Imlements the 'RuleBook' interface
 type NRuleBook map[string]map[string]Set
 
 func NewEmptyNRuleBook() NRuleBook {
 	return make(NRuleBook)
 }
 
-func (n NRuleBook) AddRule(rule Rule) {
+//Adds a single rule and allways succeeds.
+func (n NRuleBook) AddRule(rule *Rule) error {
 	if tran, ok := n[rule.GetFrom()]; ok == false {
 		set := NewSet()
 		set.Add(rule.GetTo())
@@ -18,15 +20,20 @@ func (n NRuleBook) AddRule(rule Rule) {
 	} else {
 		n[rule.GetFrom()][rule.GetWith()].Add(rule.GetTo())
 	}
+	return nil
 }
 
-func (n NRuleBook) AddRules(rules []Rule) {
+//Adds multiple rules and allways succeeds. As such,
+//the order of the rules in the slice is not important.
+func (n NRuleBook) AddRules(rules []*Rule) error {
 	for _, rule := range rules {
 		n.AddRule(rule)
 	}
+	return nil
 }
 
-func NewNRuleBook(rules []Rule) NRuleBook {
+//Returns initialised roolebook.
+func NewNRuleBook(rules []*Rule) NRuleBook {
 	book := NewEmptyNRuleBook()
 	book.AddRules(rules)
 	return book
@@ -44,6 +51,7 @@ func (n NRuleBook) String() string {
 	return str + "]"
 }
 
+//Returns a slice of the posible transitions from the given state.
 func (n NRuleBook) GetFromState(from string) [][2]string {
 	tran := make([][2]string, 0, 16)
 	if transitons, ok := n[from]; ok != false {
@@ -56,6 +64,8 @@ func (n NRuleBook) GetFromState(from string) [][2]string {
 	return tran
 }
 
+//Returns the set of posible states, which are reachable
+//with the given transition state.
 func (n NRuleBook) GetFromTransition(from, with string) Set {
 	if tran, ok := n[from]; ok != false {
 		if end, okk := tran[with]; okk != false {
@@ -65,6 +75,8 @@ func (n NRuleBook) GetFromTransition(from, with string) Set {
 	return NewSet()
 }
 
+//Returns the set of posible states, which are reachable
+//with the given transition state.
 func (n NRuleBook) GetRuleEnd(from, with string) (set Set) {
 	if tran, ok := n[from]; ok != false {
 		if end, okk := tran[with]; okk != false {
@@ -74,7 +86,8 @@ func (n NRuleBook) GetRuleEnd(from, with string) (set Set) {
 	return set
 }
 
-func (n NRuleBook) GetAllRules() (rules []Rule) {
+//Return a slice with all the rules in the curent roolbook
+func (n NRuleBook) GetAllRules() (rules []*Rule) {
 	for from, tran := range n {
 		for with, tos := range tran {
 			for _, to := range tos.Values() {

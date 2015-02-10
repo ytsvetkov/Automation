@@ -78,7 +78,7 @@ func (n *NFA) GetReject() string {
 	return n.reject
 }
 
-func (n *NFA) GetAllRules() []Rule {
+func (n *NFA) GetAllRules() []*Rule {
 	return n.rules.GetAllRules()
 }
 

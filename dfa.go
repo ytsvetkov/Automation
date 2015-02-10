@@ -89,7 +89,7 @@ func (d *DFA) GetReject() string {
 	return d.reject
 }
 
-func (d *DFA) GetAllRules() []Rule {
+func (d *DFA) GetAllRules() []*Rule {
 	return d.rules.GetAllRules()
 }
 

@@ -1,135 +1,135 @@
 package Automation
 
-import "fmt"
+// import "fmt"
 
-func ExampleRuleAndRulebook() {
-	a_to_b_with_q := NewRule("a", "q", "b")
-	c_to_d_with_theAlphabet := NewRules("c", "abcdefghijklmnopqrstuvwxyz", "d")
+// func ExampleRuleAndRulebook() {
+// 	a_to_b_with_q := NewRule("a", "q", "b")
+// 	c_to_d_with_theAlphabet := NewRules("c", "abcdefghijklmnopqrstuvwxyz", "d")
 
-	empty_rulebook := NewEmptyDRuleBook()
-	empty_rulebook.AddRule(a_to_b_with_q)
-	empty_rulebook.AddRules(c_to_d_with_theAlphabet)
+// 	empty_rulebook := NewEmptyDRuleBook()
+// 	empty_rulebook.AddRule(a_to_b_with_q)
+// 	empty_rulebook.AddRules(c_to_d_with_theAlphabet)
 
-	nonempty_rulebook := NewDRuleBook(c_to_d_with_theAlphabet)
-	fmt.Println(nonempty_rulebook)
-}
+// 	nonempty_rulebook := NewDRuleBook(c_to_d_with_theAlphabet)
+// 	fmt.Println(nonempty_rulebook)
+// }
 
-func ExampleDFA() *DFA {
-	rules := make([]Rule, 0)
-	rules = append(rules, NewRule("a", "0", "a"))
-	rules = append(rules, NewRule("a", "1", "b"))
-	rules = append(rules, NewRule("b", "0", "b"))
-	rules = append(rules, NewRule("b", "1", "a"))
-	rules = append(rules, NewRule("b", "2", "c"))
-	rules = append(rules, NewRule("a", "2", "c"))
-	rules = append(rules, NewRules("c", "012", "c")...)
+// func ExampleDFA() *DFA {
+// 	rules := make([]Rule, 0)
+// 	rules = append(rules, NewRule("a", "0", "a"))
+// 	rules = append(rules, NewRule("a", "1", "b"))
+// 	rules = append(rules, NewRule("b", "0", "b"))
+// 	rules = append(rules, NewRule("b", "1", "a"))
+// 	rules = append(rules, NewRule("b", "2", "c"))
+// 	rules = append(rules, NewRule("a", "2", "c"))
+// 	rules = append(rules, NewRules("c", "012", "c")...)
 
-	states := NewSet()
-	states.Add("a")
-	states.Add("b")
-	states.Add("c")
+// 	states := NewSet()
+// 	states.Add("a")
+// 	states.Add("b")
+// 	states.Add("c")
 
-	acc := []string{"a", "b"}
-	accept := SetFromSlice(acc)
+// 	acc := []string{"a", "b"}
+// 	accept := SetFromSlice(acc)
 
-	dfa := NewDFA("a", "c", states, accept, NewDRuleBook(rules))
+// 	dfa := NewDFA("a", "c", states, accept, NewDRuleBook(rules))
 
-	for _, char := range "10101010101101010" {
-		dfa.ReadCharacter(string(char))
-	}
+// 	for _, char := range "10101010101101010" {
+// 		dfa.ReadCharacter(string(char))
+// 	}
 
-	if dfa.Rejecting() {
-		fmt.Println("This can't be seen !!!")
-	}
+// 	if dfa.Rejecting() {
+// 		fmt.Println("This can't be seen !!!")
+// 	}
 
-	fmt.Println(dfa.GetCurrentState()) // Prints the charater 'b'
+// 	fmt.Println(dfa.GetCurrentState()) // Prints the charater 'b'
 
-	// dfa.ReadCharacter("2")
-	// if dfa.Rejecting() {
-	// 	fmt.Println("This is going to be shown")
-	// }
-	return dfa
-}
+// 	// dfa.ReadCharacter("2")
+// 	// if dfa.Rejecting() {
+// 	// 	fmt.Println("This is going to be shown")
+// 	// }
+// 	return dfa
+// }
 
-func ExampleNFA() *NFA {
-	rules := NewRules("from", "without", "toto")
-	book := NewNRuleBook(rules)
-	book.AddRules(NewRules("toto", "metal", "otot"))
-	book.AddRules(NewRules("otot", "oxigen", "from"))
-	book.AddRules(NewRules("from", "mineral", "otot"))
-	book.AddRules(NewRules("otot", "prion", "toto"))
-	book.AddRules(NewRules("toto", "tornado", "from"))
-	book.AddRule(NewRule("from", "w", "otot"))
+// func ExampleNFA() *NFA {
+// 	rules := NewRules("from", "without", "toto")
+// 	book := NewNRuleBook(rules)
+// 	book.AddRules(NewRules("toto", "metal", "otot"))
+// 	book.AddRules(NewRules("otot", "oxigen", "from"))
+// 	book.AddRules(NewRules("from", "mineral", "otot"))
+// 	book.AddRules(NewRules("otot", "prion", "toto"))
+// 	book.AddRules(NewRules("toto", "tornado", "from"))
+// 	book.AddRule(NewRule("from", "w", "otot"))
 
-	start := NewSet()
-	start.Add("from")
+// 	start := NewSet()
+// 	start.Add("from")
 
-	stt := []string{"from", "toto", "otot"}
-	states := SetFromSlice(stt)
+// 	stt := []string{"from", "toto", "otot"}
+// 	states := SetFromSlice(stt)
 
-	acc := []string{"otot"}
-	accept := SetFromSlice(acc)
+// 	acc := []string{"otot"}
+// 	accept := SetFromSlice(acc)
 
-	nfa := NewNFA(start, states, accept, "err", book)
+// 	nfa := NewNFA(start, states, accept, "err", book)
 
-	for _, char := range "wna" {
-		nfa.ReadCharacter(string(char))
-	}
+// 	for _, char := range "wna" {
+// 		nfa.ReadCharacter(string(char))
+// 	}
 
-	if nfa.Accepting() {
-		fmt.Println(nfa.GetCurrentState())
-	}
+// 	if nfa.Accepting() {
+// 		fmt.Println(nfa.GetCurrentState())
+// 	}
 
-	return nfa
-}
+// 	return nfa
+// }
 
-func ExampleOperations() {
-	dfa := x()
-	nfa := y()
+// // func ExampleOperations() {
+// // 	dfa := x()
+// // 	nfa := y()
 
-	x := Union(nfa, dfa)
-	y := Concatenation(nfa, dfa)
-	z1 := PositiveClosure(dfa)
-	z2 := PositiveClosure(nfa)
+// // 	x := Union(nfa, dfa)
+// // 	y := Concatenation(nfa, dfa)
+// // 	z1 := PositiveClosure(dfa)
+// // 	z2 := PositiveClosure(nfa)
 
-	// deterministic := Determinise(nfa)
-	// minimal := Minimise(deterministic)
+// // 	// deterministic := Determinise(nfa)
+// // 	// minimal := Minimise(deterministic)
 
-	fmt.Println(x)
-	fmt.Println(y)
-	fmt.Println(z1)
-	fmt.Println(z2)
-	// fmt.Println(deterministic)
-	// fmt.Println(minimal)
-}
+// // 	fmt.Println(x)
+// // 	fmt.Println(y)
+// // 	fmt.Println(z1)
+// // 	fmt.Println(z2)
+// // 	// fmt.Println(deterministic)
+// // 	// fmt.Println(minimal)
+// // }
 
-func ExampleDPDA() {
-	rule1 := NewPRule("a", "1", "#", "a", "0")
-	rule2 := NewPRule("a", "1", "0", "a", "0")
-	rule3 := NewPRule("a", "1", "1", "a", "0")
-	rule4 := NewPRule("a", "0", "#", "a", "1")
-	rule5 := NewPRule("a", "0", "0", "a", "1")
-	rule6 := NewPRule("a", "0", "1", "a", "1")
+// func ExampleDPDA() {
+// 	rule1 := NewPRule("a", "1", "#", "a", "0")
+// 	rule2 := NewPRule("a", "1", "0", "a", "0")
+// 	rule3 := NewPRule("a", "1", "1", "a", "0")
+// 	rule4 := NewPRule("a", "0", "#", "a", "1")
+// 	rule5 := NewPRule("a", "0", "0", "a", "1")
+// 	rule6 := NewPRule("a", "0", "1", "a", "1")
 
-	book := NewEmptyDPRuleBook()
-	book.AddRule(rule1)
-	book.AddRule(rule2)
-	book.AddRule(rule3)
-	book.AddRule(rule4)
-	book.AddRule(rule5)
-	book.AddRule(rule6)
+// 	book := NewEmptyDPRuleBook()
+// 	book.AddRule(rule1)
+// 	book.AddRule(rule2)
+// 	book.AddRule(rule3)
+// 	book.AddRule(rule4)
+// 	book.AddRule(rule5)
+// 	book.AddRule(rule6)
 
-	states := SetFromSlice([]string{"a", "b"})
-	accept := SetFromSlice([]string{"b"})
+// 	states := SetFromSlice([]string{"a", "b"})
+// 	accept := SetFromSlice([]string{"b"})
 
-	stack := NewStack()
-	stack.Push("#")
+// 	stack := NewStack()
+// 	stack.Push("#")
 
-	dpda := NewDPDA("a", "b", "a", states, accept, stack, book)
+// 	dpda := NewDPDA("a", "b", "a", states, accept, stack, book)
 
-	for _, char := range "000101010101010" {
-		fmt.Println(dpda.stack)
-		dpda.ReadCharacter(string(char))
-	}
-	fmt.Println(dpda.stack)
-}
+// 	for _, char := range "000101010101010" {
+// 		fmt.Println(dpda.stack)
+// 		dpda.ReadCharacter(string(char))
+// 	}
+// 	fmt.Println(dpda.stack)
+// }

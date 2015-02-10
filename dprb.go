@@ -7,7 +7,7 @@ func NewEmptyDPRuleBook() DPRuleBook {
 	return make(DPRuleBook)
 }
 
-func (d DPRuleBook) AddRule(rule PRule) {
+func (d DPRuleBook) AddRule(rule *PRule) {
 	if _, o := d[rule.GetFrom()]; o == false {
 		map4 := map[string]string{rule.GetTo(): rule.GetPush()}
 		map3 := map[string]map[string]string{rule.GetPop(): map4}
@@ -25,13 +25,13 @@ func (d DPRuleBook) AddRule(rule PRule) {
 	}
 }
 
-func (d DPRuleBook) AddRules(rules []PRule) {
+func (d DPRuleBook) AddRules(rules []*PRule) {
 	for _, rule := range rules {
 		d.AddRule(rule)
 	}
 }
 
-func NewDPRuleBook(rules []PRule) DPRuleBook {
+func NewDPRuleBook(rules []*PRule) DPRuleBook {
 	book := NewEmptyDPRuleBook()
 	book.AddRules(rules)
 	return book
@@ -92,7 +92,7 @@ func (d DPRuleBook) GetFromTransition(from string) (set Set) {
 	return
 }
 
-func (d DPRuleBook) GetAllRules() (rule []PRule) {
+func (d DPRuleBook) GetAllRules() (rule []*PRule) {
 	for from, rest := range d {
 		for with, rest2 := range rest {
 			for pop, rest3 := range rest2 {
