@@ -41,7 +41,6 @@ func TestRuleWith(t *testing.T) {
 	}
 	if "f" != rule.GetWith() {
 		t.Error("Problem with 'SetWith' function for Rule class")
-		t.Error(rule)
 	}
 }
 
