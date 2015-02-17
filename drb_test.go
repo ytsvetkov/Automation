@@ -26,7 +26,6 @@ func TestAddInDeterministicRuleBook(t *testing.T) {
 	err := book.AddRule(badrule)
 	if err == nil {
 		t.Error("Problem with detection of non-deterministic behaviour !!!")
-		t.Error(book)
 	}
 }
 
@@ -42,17 +41,17 @@ func TestDeterministicTransitions(t *testing.T) {
 	book.AddRule(rule3)
 
 	state := book.GetFromState("a")
-	if len(state) > 1 {
+	if len(state) != 1 {
 		t.Error("Problem with 'GetFromState': returns more than one transition!")
 	}
 
 	state = book.GetFromState("b")
-	if len(state) > 1 {
+	if len(state) != 1 {
 		t.Error("Problem with 'GetFromState': returns more than one transition!")
 	}
 
 	state = book.GetFromState("c")
-	if len(state) > 1 {
+	if len(state) != 1 {
 		t.Error("Problem with 'GetFromState': returns more than one transition!")
 	}
 
@@ -60,7 +59,6 @@ func TestDeterministicTransitions(t *testing.T) {
 	if len(state) != 0 {
 		t.Error("Problem with 'GetFromState': returns transitions for non-existing states!")
 	}
-
 }
 
 func TestDeterministicEndOfTransitions(t *testing.T) {

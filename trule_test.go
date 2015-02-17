@@ -45,6 +45,11 @@ func TestTRuleWriter(t *testing.T) {
 }
 
 func TestTRuleDirection(t *testing.T) {
+	bad := NewTRule("alpha", "0", "beta", "147", "LEF")
+	if bad != nil {
+		t.Error("Problem with initialisation!")
+	}
+
 	rule := NewTRule("alpha", "0", "beta", "147", "LEFT")
 	if "LEFT" != rule.GetDirection() {
 		t.Error("Problem with 'GetDirection' function for TRule class")
@@ -52,8 +57,12 @@ func TestTRuleDirection(t *testing.T) {
 	if "LEFT" != rule.direction {
 		t.Error("Problem with initialising 'direction' field for TRule class")
 	}
-	rule.SetDirection("RIGHT")
-	if "RIGHT" != rule.GetDirection() {
+	err := rule.SetDirection("RIGHTt")
+	if err == nil {
+		t.Error("Problem with 'SetDirection' function for TRule class")
+	}
+	err = rule.SetDirection("RIGHT")
+	if err != nil {
 		t.Error("Problem with 'SetDirection' function for TRule class")
 	}
 }

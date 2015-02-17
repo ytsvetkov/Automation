@@ -11,10 +11,12 @@ type TRule struct {
 }
 
 func NewTRule(from, with, to, writer, direction string) *TRule {
-	if len(with) == 1 {
-		return &TRule{from: from, with: with, to: to, writer: writer, direction: direction}
+	if len(with) != 1 {
+		return nil
+	} else if (direction != "LEFT") && (direction != "RIGHT") && (direction != "NOP") {
+		return nil
 	}
-	return nil
+	return &TRule{from: from, with: with, to: to, writer: writer, direction: direction}
 }
 
 func NewTRules(from, with, to, writer, direction string) []*TRule {
@@ -69,6 +71,10 @@ func (t *TRule) SetWriter(writer string) {
 	t.writer = writer
 }
 
-func (t *TRule) SetDirection(direction string) {
+func (t *TRule) SetDirection(direction string) error {
+	if (direction != "LEFT") && (direction != "RIGHT") && (direction != "NOP") {
+		return errors.New("Operation not recognized: " + direction)
+	}
 	t.direction = direction
+	return nil
 }

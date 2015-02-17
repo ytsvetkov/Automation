@@ -13,8 +13,12 @@ func NewNFA(start, states, accept Set, reject string, rules NRuleBook) *NFA {
 	return &NFA{start: start, current: start, states: states, accept: accept, reject: reject, rules: rules}
 }
 
+func (n *NFA) String() string {
+	return "Current state: " + n.current.String()
+}
+
 func (d *NFA) Accepting() bool {
-	return d.accept.Intersection(d.current).Cardinality() != 0
+	return !(d.accept.Intersection(d.current).Cardinality() != 0)
 }
 
 func (d *NFA) Rejecting() bool {
@@ -26,7 +30,6 @@ func (n *NFA) ReadCharacter(char string) {
 		return
 	}
 	a := n.current.Values()
-	// n.current.Clear()
 	n.current = NewSet()
 	for _, member := range a {
 		b := n.rules.GetRuleEnd(member, char)

@@ -1,5 +1,8 @@
 package Automation
 
+import "errors"
+
+// Because of this: https://groups.google.com/forum/#!topic/golang-nuts/VUtUmxm2ubU
 //					from		with        pop        to    push
 type DPRuleBook map[string]map[string]map[string]map[string]string
 
@@ -7,7 +10,9 @@ func NewEmptyDPRuleBook() DPRuleBook {
 	return make(DPRuleBook)
 }
 
-func (d DPRuleBook) AddRule(rule *PRule) {
+//Adds a single rule iff it does not introduce
+//non-deterministic behaviour.
+func (d DPRuleBook) AddRule(rule *PRule) error {
 	if _, o := d[rule.GetFrom()]; o == false {
 		map4 := map[string]string{rule.GetTo(): rule.GetPush()}
 		map3 := map[string]map[string]string{rule.GetPop(): map4}
@@ -20,21 +25,42 @@ func (d DPRuleBook) AddRule(rule *PRule) {
 	} else if _, okk := d[rule.GetFrom()][rule.GetWith()][rule.GetPop()]; okk == false {
 		map3 := map[string]string{rule.GetTo(): rule.GetPush()}
 		d[rule.GetFrom()][rule.GetWith()][rule.GetPop()] = map3
+	} else if _, ko := d[rule.GetFrom()][rule.GetWith()][rule.GetPop()]; ko == true {
+		return errors.New("This introduces non-deterministic behaviour: " + rule.String() + " !!!")
 	} else if _, okkk := d[rule.GetFrom()][rule.GetWith()][rule.GetPop()][rule.GetTo()]; okkk == false {
 		d[rule.GetFrom()][rule.GetWith()][rule.GetPop()][rule.GetTo()] = rule.GetPush()
+	} else if d[rule.GetFrom()][rule.GetWith()][rule.GetPop()][rule.GetTo()] != rule.GetPush() {
+		return errors.New("This introduces non-deterministic behaviour: " + rule.String() + " !!!")
 	}
+	return nil
 }
 
-func (d DPRuleBook) AddRules(rules []*PRule) {
+//Adds multiple rules and ignores the ones which
+//introduce non-deterministic behaviour. As such,
+//the order of the rules in the slice is important.
+func (d DPRuleBook) AddRules(rules []*PRule) error {
+	errMsg := "The following rules were not added becaouse of introduction of non-deterministic behaviour: \n"
+	var err error
+	var flag bool
+
 	for _, rule := range rules {
-		d.AddRule(rule)
+		err = d.AddRule(rule)
+		if err != nil {
+			flag = true
+			errMsg += rule.String() + "\n"
+		}
 	}
+
+	if flag {
+		return errors.New(errMsg)
+	}
+	return nil
 }
 
-func NewDPRuleBook(rules []*PRule) DPRuleBook {
+func NewDPRuleBook(rules []*PRule) (DPRuleBook, error) {
 	book := NewEmptyDPRuleBook()
-	book.AddRules(rules)
-	return book
+	err := book.AddRules(rules)
+	return book, err
 }
 
 func (d DPRuleBook) String() string {
@@ -51,6 +77,9 @@ func (d DPRuleBook) String() string {
 	return str + "]"
 }
 
+//Returns the posible transitions from the given state.
+//Each element in the slice is of the form:
+//with - pop - to - push
 func (d DPRuleBook) GetFromState(from string) [][4]string {
 	tran := make([][4]string, 0, 16)
 	if transitons, ok := d[from]; ok != false {
@@ -65,6 +94,10 @@ func (d DPRuleBook) GetFromState(from string) [][4]string {
 	return tran
 }
 
+//Returns slice of posible state-push tuples, which are
+//reachable with the given transition state. Because
+// this is a deterministic machine, there is going to
+//be only one element in it, or none. Always !
 func (d DPRuleBook) GetRuleEnd(from, with, pop string) (result [][2]string) {
 	if transitons, ok := d[from]; ok != false {
 		if transitons2, okk := transitons[with]; okk != false {
@@ -79,7 +112,9 @@ func (d DPRuleBook) GetRuleEnd(from, with, pop string) (result [][2]string) {
 	return
 }
 
-func (d DPRuleBook) GetFromTransition(from string) (set Set) {
+//Returns the set of all reachable states from the given one.
+func (d DPRuleBook) GetFromTransition(from string) Set {
+	set := NewSet()
 	if transitons, ok := d[from]; ok != false {
 		for _, rest := range transitons {
 			for _, rest2 := range rest {
@@ -89,9 +124,10 @@ func (d DPRuleBook) GetFromTransition(from string) (set Set) {
 			}
 		}
 	}
-	return
+	return set
 }
 
+//Return a slice with all the rules in the curent roolbook
 func (d DPRuleBook) GetAllRules() (rule []*PRule) {
 	for from, rest := range d {
 		for with, rest2 := range rest {

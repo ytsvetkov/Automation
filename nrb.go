@@ -1,6 +1,7 @@
 package Automation
 
 //Imlements the 'RuleBook' interface
+//Because of this: https://groups.google.com/forum/#!topic/golang-nuts/VUtUmxm2ubU
 type NRuleBook map[string]map[string]Set
 
 func NewEmptyNRuleBook() NRuleBook {
@@ -76,7 +77,7 @@ func (n NRuleBook) GetFromTransition(from, with string) Set {
 }
 
 //Returns the set of posible states, which are reachable
-//with the given transition state.
+//from the given transition state.
 func (n NRuleBook) GetRuleEnd(from, with string) (set Set) {
 	if tran, ok := n[from]; ok != false {
 		if end, okk := tran[with]; okk != false {

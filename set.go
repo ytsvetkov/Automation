@@ -95,11 +95,6 @@ func (s Set) Union(other Set) Set {
 	return set
 }
 
-//'Nullifies' the set.
-func (s Set) Clear() {
-	s = NewSet()
-}
-
 //Checks whether the sets have the same elements.
 func (s Set) Eq(other Set) bool {
 	if s.Cardinality() != s.Cardinality() {
