@@ -2,7 +2,7 @@ package Automation
 
 import "testing"
 
-func TestA(t *testing.T) {
+func TestCreationNFA(t *testing.T) {
 	rules := NewRules("from", "without", "toto")
 	book := NewNRuleBook(rules)
 	book.AddRules(NewRules("toto", "metal", "otot"))
@@ -40,7 +40,7 @@ func TestA(t *testing.T) {
 	}
 }
 
-func TestT(t *testing.T) {
+func TestRecognitionNFA(t *testing.T) {
 	rules := NewRules("from", "without", "toto")
 	book := NewNRuleBook(rules)
 	book.AddRules(NewRules("toto", "metal", "otot"))
@@ -75,5 +75,33 @@ func TestT(t *testing.T) {
 			t.Error("Problem with alphabet!")
 			t.Error(letter + " was found")
 		}
+	}
+}
+
+func TestRestart(t *testing.T) {
+	rules := NewRules("from", "without", "toto")
+	book := NewNRuleBook(rules)
+	book.AddRules(NewRules("toto", "metal", "otot"))
+	book.AddRules(NewRules("otot", "oxigen", "from"))
+	book.AddRules(NewRules("from", "oxigen", "otot"))
+	book.AddRules(NewRules("otot", "prion", "toto"))
+	book.AddRules(NewRules("toto", "tornado", "from"))
+	book.AddRule(NewRule("from", "w", "otot"))
+
+	start := NewSet()
+	start.Add("from")
+
+	stt := []string{"from", "toto", "otot"}
+	states := SetFromSlice(stt)
+
+	acc := []string{"otot"}
+	accept := SetFromSlice(acc)
+
+	nfa := NewNFA(start, states, accept, "err", book)
+
+	nfa.ReadCharacter("w")
+	nfa.Restart()
+	if !nfa.current.Eq(nfa.start) {
+		t.Error("Can't restart. Some problem.")
 	}
 }

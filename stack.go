@@ -25,6 +25,11 @@ func (s *Stack) Push(value string) {
 	}
 }
 
+func (s *Stack) PushString(value string) {
+	s.top = &item{value: value, next: s.top}
+	s.size++
+}
+
 func (s *Stack) Pop() (value string, exists bool) {
 	exists = false
 	if s.size > 0 {
@@ -50,12 +55,15 @@ func NewStack() *Stack {
 
 func (s *Stack) String() string {
 	ptr := s.top
-	var str string
+	str := "["
 
-	for ptr != nil {
-		str += ptr.value + " "
+	for i := 0; i < s.size-1; i++ {
+		str += ptr.value + ", "
 		ptr = ptr.next
 	}
 
-	return str
+	if ptr != nil {
+		return str + ptr.value + "]"
+	}
+	return ""
 }

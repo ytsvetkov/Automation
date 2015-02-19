@@ -11,7 +11,7 @@ type PRule struct {
 }
 
 func NewPRule(from, with, pop, to, push string) *PRule {
-	if len(with) == 1 {
+	if len(with) == 1 || (len(with) == 2 && string(with[1]) == "!") {
 		return &PRule{from: from, with: with, to: to, pop: pop, push: push}
 	}
 	return nil
@@ -54,7 +54,7 @@ func (p *PRule) SetFrom(from string) {
 }
 
 func (p *PRule) SetWith(with string) error {
-	if len(with) == 1 {
+	if len(with) == 1 || (len(with) == 2 && string(with[1]) == "!") {
 		p.with = with
 		return nil
 	}

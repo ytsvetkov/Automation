@@ -9,6 +9,7 @@ type DFA struct {
 	reject  string
 }
 
+//Returns new Deterministic Finite Automata
 func NewDFA(start, reject string, states, accept Set, rules DRuleBook) *DFA {
 	return &DFA{start: start, current: start, reject: reject, states: states, accept: accept, rules: rules}
 }
@@ -87,6 +88,8 @@ func (d *DFA) GetAllEnds() Set {
 	return set
 }
 
+//Returns the alphabet with wich the
+//machine is working with.
 func (d *DFA) GetAlphabet() Set {
 	letters := NewSet()
 	for _, rest := range d.rules {
@@ -97,7 +100,9 @@ func (d *DFA) GetAlphabet() Set {
 	return letters
 }
 
-//Return the set of starting states
+//Return the set of starting states.
+//This is deterministic machine so
+//there could be only one such state.
 func (d *DFA) GetStartStates() Set {
 	start := NewSet()
 	start.Add(d.start)
@@ -114,10 +119,15 @@ func (d *DFA) GetReject() string {
 	return d.reject
 }
 
+//Returns all rules.
 func (d *DFA) GetAllRules() []*Rule {
 	return d.rules.GetAllRules()
 }
 
+//Returns all transition pairs from the
+//given state. Because this is deterministic
+//machine, there cant be more than one element
+//in the slice.
 func (d *DFA) GetFromState(from string) [][2]string {
 	return d.rules.GetFromState(from)
 }

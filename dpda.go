@@ -1,7 +1,5 @@
 package Automation
 
-import "fmt"
-
 type DPDA struct {
 	start   string
 	reject  string
@@ -12,42 +10,61 @@ type DPDA struct {
 	rules   DPRuleBook
 }
 
+//Returns new Deterministic Pushdown Automata.
 func NewDPDA(start, reject, current string, states, accept Set, stack *Stack, rules DPRuleBook) *DPDA {
 	return &DPDA{start: start, reject: reject, current: current, states: states, accept: accept, stack: stack, rules: rules}
 }
 
+func (d *DPDA) Restart() {
+	d.current = d.start
+	for i := 0; i < d.stack.Len()-1; i++ {
+		_, _ = d.stack.Pop()
+	}
+}
+
+func (d *DPDA) String() string {
+	return "Current state: " + d.current + "\nState of the stack: " + d.stack.String()
+}
+
+//Whether the string so far is part of the language.
 func (d *DPDA) Accepting() bool {
 	return d.accept.Contains(d.current)
 }
 
+//Whether the string so far is not part of the language.
 func (d *DPDA) Rejecting() bool {
 	return d.current == d.reject
 }
 
 func (d *DPDA) ReadCharacter(char string) {
 	stackTop, err := d.stack.Peek()
+	pop := true
 
 	if !err {
-		fmt.Println("000")
 		d.current = d.reject
 		return
 	}
 
-	x := d.rules.GetRuleEnd(d.current, char, stackTop)
-	if x == nil {
-		fmt.Println("Error")
-		d.current = d.reject
-		return
+	rule := d.rules.GetRuleEnd(d.current, char, stackTop)
+	if rule == nil {
+		rule = d.rules.GetRuleEnd(d.current, char, stackTop+"!")
+		if rule == nil {
+			d.current = d.reject
+			return
+		}
+		pop = false
 	}
 
-	d.current = x[0][0]
-	if stackTop != "?" {
+	d.current = rule[0][0]
+	if pop == true {
 		_, _ = d.stack.Pop()
 	}
 
-	d.stack.Push(x[0][1])
-}
+	if rule[0][1] != " " {
+		d.stack.Push(rule[0][1])
+	}
 
+}
 func (d *DPDA) ReadString(word string) {
 	for _, char := range word {
 		if d.Rejecting() {
@@ -55,4 +72,15 @@ func (d *DPDA) ReadString(word string) {
 		}
 		d.ReadCharacter(string(char))
 	}
+}
+
+//Returns the string representation of stack.
+//The format is '[' member1 ',' member2 ',' ... ']'
+func (d *DPDA) GetStackAsString() string {
+	return d.stack.String()
+}
+
+//Returns the stack of the machine.
+func (d *DPDA) GetStack() Stack {
+	return *(d.stack)
 }
