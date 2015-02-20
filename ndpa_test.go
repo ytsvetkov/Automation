@@ -2,7 +2,7 @@ package Automation
 
 import "testing"
 
-func TestT(t *testing.T) {
+func TestCreatingNDPA(t *testing.T) {
 	rule1 := NewPRule("a", "1", "#", "c", "0")
 	rule7 := NewPRule("a", "1", "#", "c", "1")
 	rule8 := NewPRule("a", "1", "#", "c", "2")

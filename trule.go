@@ -28,7 +28,7 @@ func NewTRules(from, with, to, writer, direction string) []*TRule {
 }
 
 func (t *TRule) String() string {
-	return "(" + t.from + ")-" + t.with + "-|(" + t.to + ")<" + t.writer + ">[" + t.direction + "]"
+	return "(" + t.from + ")-" + t.with + "-(" + t.to + ")<" + t.writer + ">[" + t.direction + "]"
 }
 
 func (t *TRule) GetWith() string {

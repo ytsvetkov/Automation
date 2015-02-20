@@ -133,3 +133,34 @@ package Automation
 // 	}
 // 	fmt.Println(dpda.stack)
 // }
+
+// func TestRunTuringRun(t *testing.T) {
+// 	rule1 := NewTRule("alpha", "0", "alpha", "1", "RIGHT")
+// 	rule2 := NewTRule("alpha", "1", "alpha", "0", "RIGHT")
+// 	rule3 := NewTRule("alpha", "#", "sigma", " ", "NOP")
+
+// 	book := NewEmptyTuringRoolBook()
+// 	book.AddRule(rule1)
+// 	book.AddRule(rule2)
+// 	book.AddRule(rule3)
+
+// 	accept := NewSet()
+// 	accept.Add("sigma")
+
+// 	states := NewSet()
+// 	states.Add("alpha")
+// 	states.Add("sigma")
+// 	states.Add("teta")
+
+// 	tape := NewNonEmptyTape("", "0", "01010001001101110#")
+
+// 	tur := NewDTuringMachine("alpha", "teta", states, accept, tape, book)
+
+// 	tur.Run()
+// 	if tur.Rejecting() {
+// 		t.Error("Should not be rejecting!")
+// 	}
+// 	if !tur.Accepting() {
+// 		t.Error("Should be accepting!")
+// 	}
+// }
