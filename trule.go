@@ -2,6 +2,7 @@ package Automation
 
 import "errors"
 
+// Rules( or transition rules) for the turing machines.
 type TRule struct {
 	with      string
 	writer    string

@@ -1,13 +1,16 @@
 package Automation
 
-//					     from       with  to-writer-dir
+// Imlements the 'RuleBook' interface
+// Used for stroring the transition rules of a NonDeterministic
+// Turing machine. The 'book' has the following structure:
+// fromState-withReadCharacter-toState-writeCharacter-direction
 type TuringNRoolBook map[string]map[string][][3]string
 
 func NewEmptyNTuringNRoolBook() TuringNRoolBook {
 	return make(TuringNRoolBook)
 }
 
-//Adds a single rule.
+// Adds a single rule.
 func (t TuringNRoolBook) AddRule(rule *TRule) error {
 	if _, o := t[rule.GetFrom()]; o == false {
 		array := [3]string{rule.GetTo(), rule.GetWriter(), rule.GetDirection()}
@@ -28,8 +31,8 @@ func (t TuringNRoolBook) AddRule(rule *TRule) error {
 	return nil
 }
 
-//Adds multiple rules . As such, the order
-//of the rules in the slice is not important.
+// Adds multiple rules . As such, the order
+// of the rules in the slice is not important.
 func (t TuringNRoolBook) AddRules(rules []*TRule) error {
 	for _, rule := range rules {
 		t.AddRule(rule)
@@ -55,9 +58,9 @@ func (t TuringNRoolBook) String() string {
 	return str
 }
 
-//Returns the posible transitions from the given state.
-//Each element in the slice is of the form:
-//with - to - write - dir
+// Returns the posible transitions from the given state.
+// Each element in the slice is of the form:
+// with - to - write - dir
 func (t TuringNRoolBook) GetFromState(from string) [][4]string {
 	tran := make([][4]string, 0, 16)
 	if transitons, ok := t[from]; ok != false {
@@ -70,8 +73,8 @@ func (t TuringNRoolBook) GetFromState(from string) [][4]string {
 	return tran
 }
 
-//Returns slice of posible state-push tuples, which are
-//reachable with the given transition state.
+// Returns slice of posible state-push tuples, which are
+// reachable with the given transition state.
 func (t TuringNRoolBook) GetRuleEnd(from, with string) [][3]string {
 	result := make([][3]string, 0)
 	if transitons, ok := t[from]; ok != false {
@@ -84,8 +87,8 @@ func (t TuringNRoolBook) GetRuleEnd(from, with string) [][3]string {
 	return result
 }
 
-//Returns the set of posible states, which are
-//reachable with the given transition state.
+// Returns the set of posible states, which are
+// reachable with the given transition state.
 func (t TuringNRoolBook) GetFromTransition(from string) Set {
 	set := NewSet()
 	if transitons, ok := t[from]; ok != false {
@@ -98,7 +101,7 @@ func (t TuringNRoolBook) GetFromTransition(from string) Set {
 	return set
 }
 
-//Return a slice with all the rules in the curent roolbook.
+// Return a slice with all the rules in the curent roolbook.
 func (t TuringNRoolBook) GetAllRules() []*TRule {
 	rule := []*TRule{}
 	for from, j := range t {

@@ -2,15 +2,18 @@ package Automation
 
 import "errors"
 
-//					     from       with  to-writer-dir
+// Imlements the 'RuleBook' interface
+// Used for stroring the transition rules of a Deterministic
+// Turing Machine. The 'book' has the following structure:
+// fromState-withReadCharacter-toState-writeCharacter-Direction
 type TuringRoolBook map[string]map[string][3]string
 
 func NewEmptyTuringRoolBook() TuringRoolBook {
 	return make(TuringRoolBook)
 }
 
-//Adds a single rule iff it does not introduce
-//non-deterministic behaviour.
+// Adds a single rule iff it does not introduce
+// non-deterministic behaviour.
 func (t TuringRoolBook) AddRule(rule *TRule) error {
 	if _, o := t[rule.GetFrom()]; o == false {
 		map4 := map[string][3]string{rule.GetWith(): [3]string{rule.GetTo(), rule.GetWriter(), rule.GetDirection()}}
@@ -23,9 +26,9 @@ func (t TuringRoolBook) AddRule(rule *TRule) error {
 	return nil
 }
 
-//Adds multiple rules and ignores the ones which
-//introduce non-deterministic behaviour. As such,
-//the order of the rules in the slice is important.
+// Adds multiple rules and ignores the ones which
+// introduce non-deterministic behaviour. As such,
+// the order of the rules in the slice is important.
 func (t TuringRoolBook) AddRules(rules []*TRule) error {
 	errMsg := "The following rules were not added becaouse of introduction of non-deterministic behaviour: \n"
 	var err error
@@ -61,9 +64,9 @@ func (t TuringRoolBook) String() string {
 	return str
 }
 
-//Returns the posible transitions from the given state.
-//Each element in the slice is of the form:
-//with - to - write - dir
+// Returns the posible transitions from the given state.
+// Each element in the slice is of the form:
+// with - to - write - dir
 func (t TuringRoolBook) GetFromState(from string) [][4]string {
 	tran := make([][4]string, 0, 16)
 	if transitons, ok := t[from]; ok != false {
@@ -74,10 +77,10 @@ func (t TuringRoolBook) GetFromState(from string) [][4]string {
 	return tran
 }
 
-//Returns slice of posible state-push tuples, which are
-//reachable with the given transition state. Because
-//this is a deterministic machine, there is going to
-//be only one element in it, or none. Always !
+// Returns slice of posible state-push tuples, which are
+// reachable with the given transition state. Because
+// this is a deterministic machine, there is going to
+// be only one element in it, or none. Always !
 func (t TuringRoolBook) GetRuleEnd(from, with string) [][3]string {
 	result := [][3]string{}
 	if transitons, ok := t[from]; ok != false {
@@ -88,8 +91,8 @@ func (t TuringRoolBook) GetRuleEnd(from, with string) [][3]string {
 	return result
 }
 
-//Returns the set of posible states, which are
-//reachable with the given transition state.
+// Returns the set of posible states, which are
+// reachable with the given transition state.
 func (t TuringRoolBook) GetFromTransition(from string) Set {
 	set := NewSet()
 	if transitons, ok := t[from]; ok != false {
@@ -100,7 +103,7 @@ func (t TuringRoolBook) GetFromTransition(from string) Set {
 	return set
 }
 
-//Return a slice with all the rules in the curent roolbook.
+// Return a slice with all the rules in the curent roolbook.
 func (t TuringRoolBook) GetAllRules() []*TRule {
 	rule := []*TRule{}
 	for from, j := range t {

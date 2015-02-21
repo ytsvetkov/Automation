@@ -2,6 +2,7 @@ package Automation
 
 import "errors"
 
+// Rules( or transition rules) for the (D|N)PDA.
 type PRule struct {
 	from string
 	with string

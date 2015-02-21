@@ -2,16 +2,19 @@ package Automation
 
 import "errors"
 
-// Because of this: https://groups.google.com/forum/#!topic/golang-nuts/VUtUmxm2ubU
-//					from		with        pop        to    push
+// Imlements the 'RuleBook' interface
+// Used for stroring the transition rules of a Deterministic
+// Pushdown Automata. The 'book' has the following structure:
+// fromState-withReadCharacter-popCharacter-toState-pushCharacter
+// Its used this structure because of https://groups.google.com/forum/#!topic/golang-nuts/VUtUmxm2ubU
 type DPRuleBook map[string]map[string]map[string]map[string]string
 
 func NewEmptyDPRuleBook() DPRuleBook {
 	return make(DPRuleBook)
 }
 
-//Adds a single rule iff it does not introduce
-//non-deterministic behaviour.
+// Adds a single rule iff it does not introduce
+// non-deterministic behaviour.
 func (d DPRuleBook) AddRule(rule *PRule) error {
 	if _, o := d[rule.GetFrom()]; o == false {
 		map4 := map[string]string{rule.GetTo(): rule.GetPush()}
@@ -35,9 +38,9 @@ func (d DPRuleBook) AddRule(rule *PRule) error {
 	return nil
 }
 
-//Adds multiple rules and ignores the ones which
-//introduce non-deterministic behaviour. As such,
-//the order of the rules in the slice is important.
+// Adds multiple rules and ignores the ones which
+// introduce non-deterministic behaviour. As such,
+// the order of the rules in the slice is important.
 func (d DPRuleBook) AddRules(rules []*PRule) error {
 	errMsg := "The following rules were not added becaouse of introduction of non-deterministic behaviour: \n"
 	var err error
@@ -77,9 +80,9 @@ func (d DPRuleBook) String() string {
 	return str + "]"
 }
 
-//Returns the posible transitions from the given state.
-//Each element in the slice is of the form:
-//with - pop - to - push
+// Returns the posible transitions from the given state.
+// Each element in the slice is of the form:
+// with - pop - to - push
 func (d DPRuleBook) GetFromState(from string) [][4]string {
 	tran := make([][4]string, 0, 16)
 	if transitons, ok := d[from]; ok != false {
@@ -94,10 +97,10 @@ func (d DPRuleBook) GetFromState(from string) [][4]string {
 	return tran
 }
 
-//Returns slice of posible state-push tuples, which are
-//reachable with the given transition state. Because
-//this is a deterministic machine, there is going to
-//be only one element in it, or none. Always !
+// Returns slice of posible state-push tuples, which are
+// reachable with the given transition state. Because
+// this is a deterministic machine, there is going to
+// be only one element in it, or none. Always !
 func (d DPRuleBook) GetRuleEnd(from, with, pop string) (result [][2]string) {
 	if transitons, ok := d[from]; ok != false {
 		if transitons2, okk := transitons[with]; okk != false {
@@ -112,7 +115,7 @@ func (d DPRuleBook) GetRuleEnd(from, with, pop string) (result [][2]string) {
 	return
 }
 
-//Returns the set of all reachable states from the given one.
+// Returns the set of all reachable states from the given one.
 func (d DPRuleBook) GetFromTransition(from string) Set {
 	set := NewSet()
 	if transitons, ok := d[from]; ok != false {
@@ -127,7 +130,7 @@ func (d DPRuleBook) GetFromTransition(from string) Set {
 	return set
 }
 
-//Return a slice with all the rules in the curent roolbook
+// Return a slice with all the rules in the curent roolbook
 func (d DPRuleBook) GetAllRules() (rule []*PRule) {
 	for from, rest := range d {
 		for with, rest2 := range rest {

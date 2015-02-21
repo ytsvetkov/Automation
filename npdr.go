@@ -1,14 +1,17 @@
 package Automation
 
-// Because of this: https://groups.google.com/forum/#!topic/golang-nuts/VUtUmxm2ubU
-//					 from		with        pop       push  to
+// Imlements the 'RuleBook' interface
+// Used for stroring the transition rules of a NonDeterministic
+// Pushdown Automata. The 'book' has the following structure:
+// fromState-withReadCharacter-popCharacter-pushCharacter-toStates
+// Its used this structure because of https://groups.google.com/forum/#!topic/golang-nuts/VUtUmxm2ubU
 type NPRuleBook map[string]map[string]map[string]map[string]Set
 
 func NewEmptyNPRuleBook() NPRuleBook {
 	return make(NPRuleBook)
 }
 
-//Adds a single rule and allways succeeds.
+// Adds a single rule and allways succeeds.
 func (d NPRuleBook) AddRule(rule *PRule) error {
 	if _, o := d[rule.GetFrom()]; o == false {
 		set := NewSet()
@@ -38,8 +41,8 @@ func (d NPRuleBook) AddRule(rule *PRule) error {
 	return nil
 }
 
-//Adds multiple rules and allways succeeds. As such,
-//the order of the rules in the slice is not important.
+// Adds multiple rules and allways succeeds. As such,
+// the order of the rules in the slice is not important.
 func (d NPRuleBook) AddRules(rules []*PRule) error {
 	for _, rule := range rules {
 		d.AddRule(rule)
@@ -47,7 +50,7 @@ func (d NPRuleBook) AddRules(rules []*PRule) error {
 	return nil
 }
 
-//Returns initialised roolebook.
+// Returns initialised roolebook.
 func NewNPRuleBook(rules []*PRule) NPRuleBook {
 	book := NewEmptyNPRuleBook()
 	book.AddRules(rules)
@@ -70,7 +73,7 @@ func (d NPRuleBook) String() string {
 	return str + "]"
 }
 
-//Returns a slice of the posible transitions from the given state.
+// Returns a slice of the posible transitions from the given state.
 func (d NPRuleBook) GetFromState(from string) [][4]string {
 	tran := make([][4]string, 0, 16)
 	if transitons, ok := d[from]; ok != false {
@@ -87,7 +90,7 @@ func (d NPRuleBook) GetFromState(from string) [][4]string {
 	return tran
 }
 
-//Returns a slice of the posible transition-ends from the given state.
+// Returns a slice of the posible transition-ends from the given state.
 func (d NPRuleBook) GetRuleEnd(from, with, pop string) [][2]string {
 	result := [][2]string{}
 	if transitons, ok := d[from]; ok != false {
@@ -104,8 +107,8 @@ func (d NPRuleBook) GetRuleEnd(from, with, pop string) [][2]string {
 	return result
 }
 
-//Returns the set of posible states, which are reachable
-//from the given state.
+// Returns the set of posible states, which are reachable
+// from the given state.
 func (d NPRuleBook) GetFromTransition(from string) Set {
 	set := NewSet()
 	if transitons, ok := d[from]; ok != false {
@@ -122,7 +125,7 @@ func (d NPRuleBook) GetFromTransition(from string) Set {
 	return set
 }
 
-//Return a slice with all the rules in the curent roolbook
+// Return a slice with all the rules in the curent roolbook
 func (d NPRuleBook) GetAllRules() []*PRule {
 	rule := []*PRule{}
 	for from, rest := range d {

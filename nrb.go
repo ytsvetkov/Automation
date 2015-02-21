@@ -1,14 +1,16 @@
 package Automation
 
-//Imlements the 'RuleBook' interface
-//Because of this: https://groups.google.com/forum/#!topic/golang-nuts/VUtUmxm2ubU
+// Imlements the 'RuleBook' interface
+// Used for stroring the transition rules of a NonDeterministic
+// Finite Automata. The 'book' has the following structure:
+// fromState-withReadCharacter-toState
 type NRuleBook map[string]map[string]Set
 
 func NewEmptyNRuleBook() NRuleBook {
 	return make(NRuleBook)
 }
 
-//Adds a single rule and allways succeeds.
+// Adds a single rule and allways succeeds.
 func (n NRuleBook) AddRule(rule *Rule) error {
 	if tran, ok := n[rule.GetFrom()]; ok == false {
 		set := NewSet()
@@ -24,8 +26,8 @@ func (n NRuleBook) AddRule(rule *Rule) error {
 	return nil
 }
 
-//Adds multiple rules and allways succeeds. As such,
-//the order of the rules in the slice is not important.
+// Adds multiple rules and allways succeeds. As such,
+// the order of the rules in the slice is not important.
 func (n NRuleBook) AddRules(rules []*Rule) error {
 	for _, rule := range rules {
 		n.AddRule(rule)
@@ -33,7 +35,7 @@ func (n NRuleBook) AddRules(rules []*Rule) error {
 	return nil
 }
 
-//Returns initialised roolebook.
+// Returns initialised roolebook.
 func NewNRuleBook(rules []*Rule) NRuleBook {
 	book := NewEmptyNRuleBook()
 	book.AddRules(rules)
@@ -52,7 +54,7 @@ func (n NRuleBook) String() string {
 	return str + "]"
 }
 
-//Returns a slice of the posible transitions from the given state.
+// Returns a slice of the posible transitions from the given state.
 func (n NRuleBook) GetFromState(from string) [][2]string {
 	tran := make([][2]string, 0, 16)
 	if transitons, ok := n[from]; ok != false {
@@ -65,8 +67,8 @@ func (n NRuleBook) GetFromState(from string) [][2]string {
 	return tran
 }
 
-//Returns the set of posible states, which are reachable
-//with the given transition state.
+// Returns the set of posible states, which are reachable
+// with the given transition state.
 func (n NRuleBook) GetFromTransition(from, with string) Set {
 	if tran, ok := n[from]; ok != false {
 		if end, okk := tran[with]; okk != false {
@@ -76,8 +78,8 @@ func (n NRuleBook) GetFromTransition(from, with string) Set {
 	return NewSet()
 }
 
-//Returns the set of posible states, which are reachable
-//from the given transition state.
+// Returns the set of posible states, which are reachable
+// from the given transition state.
 func (n NRuleBook) GetRuleEnd(from, with string) (set Set) {
 	if tran, ok := n[from]; ok != false {
 		if end, okk := tran[with]; okk != false {
@@ -87,7 +89,7 @@ func (n NRuleBook) GetRuleEnd(from, with string) (set Set) {
 	return set
 }
 
-//Return a slice with all the rules in the curent roolbook
+// Return a slice with all the rules in the curent roolbook
 func (n NRuleBook) GetAllRules() (rules []*Rule) {
 	for from, tran := range n {
 		for with, tos := range tran {

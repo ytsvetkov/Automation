@@ -1,5 +1,6 @@
 package Automation
 
+// Deterministic Finite Automata
 type DFA struct {
 	states  Set
 	rules   DRuleBook
@@ -23,12 +24,12 @@ func (d *DFA) Restart() {
 	d.current = d.start
 }
 
-// Whether the string so far is part of the language.
+// Returns whether the string so far is part of the language.
 func (d *DFA) Accepting() bool {
 	return d.accept.Contains(d.current)
 }
 
-// Whether the string so far is not part of the language.
+// Returns whether the string so far is not part of the language.
 func (d *DFA) Rejecting() bool {
 	return d.current == d.reject
 }

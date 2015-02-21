@@ -2,6 +2,7 @@ package Automation
 
 import "errors"
 
+// Rules( or transition rules) for the (D|N)FA.
 type Rule struct {
 	from string
 	with string

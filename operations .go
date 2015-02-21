@@ -1,8 +1,8 @@
 package Automation
 
 // Union of two finite automata. This generates new automata,
-//whos recognised language is the union of the languages of
-//the two given automata.
+// whos recognised language is the union of the languages of
+// the two given automata.
 func Union(auto1, auto2 RegularAutomata) *NFA {
 	start := auto1.GetStartStates()
 	start.AddSet(auto2.GetStartStates())
@@ -40,9 +40,9 @@ func Union(auto1, auto2 RegularAutomata) *NFA {
 	return NewNFA(start, states, accept, reject, NewNRuleBook(rules))
 }
 
-//Concatenation of two finite automata. This generates new automata,
-//whos recognised language is the concatenation of the languages of
-//the two given automata.
+// Concatenation of two finite automata. This generates new automata,
+// whos recognised language is the concatenation of the languages of
+// the two given automata.
 func Concatenation(auto1, auto2 RegularAutomata) *NFA {
 	start := auto1.GetStartStates()
 
@@ -164,10 +164,10 @@ func Determinise(nfa *NFA) *DFA {
 
 }
 
-//Function for minimisation of deterministic
-//finite automata. It uses the Brzozowski's algorithm
-//which is suitable for some "small" automatas and
-//for the majority of the "larger" ones.
+// Function for minimisation of deterministic
+// finite automata. It uses the Brzozowski's algorithm
+// which is suitable for some "small" automatas and
+// for the majority of the "larger" ones.
 func Minimise(dfa *DFA) *DFA {
 	nfa1 := ReverseAutomata(dfa)
 	dfa2 := Determinise(nfa1)

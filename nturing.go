@@ -1,5 +1,6 @@
 package Automation
 
+// NonDeterministic Turing Machine
 type NTuringMachine struct {
 	tape      []Set
 	states    Set
@@ -30,14 +31,17 @@ func NewNTuringMachine(current, states, accept Set, reject string, tape *Tape, r
 		tape: t, rules: rules, headIndex: []int{len(tape.left)}}
 }
 
+// Returns whether the string so far is part of the language.
 func (t *NTuringMachine) Accepting() bool {
 	return (!t.Rejecting()) && (t.accept.Intersection(t.current).Cardinality() != 0)
 }
 
+// Returns whether the string so far is not part of the language.
 func (t *NTuringMachine) Rejecting() bool {
 	return t.current.Contains(t.reject)
 }
 
+// One step transitioning.
 func (t *NTuringMachine) Step() {
 	transition := [][3]string{}
 
@@ -77,12 +81,14 @@ func (t *NTuringMachine) Step() {
 	t.headIndex = newHead
 }
 
+// Starts the machine until it halts.
 func (t *NTuringMachine) Run() {
 	for !t.Rejecting() && !t.Accepting() {
 		t.Step()
 	}
 }
 
+// Returns the current state.
 func (t *NTuringMachine) GetCurrentState() string {
 	return t.current.String()
 }
@@ -98,6 +104,7 @@ func (t *NTuringMachine) String() string {
 	return str
 }
 
+// String representation of the tape of the machine.
 func (t *NTuringMachine) GetTapeString() string {
 	head := false
 	str := "["

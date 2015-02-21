@@ -4,6 +4,7 @@ import "fmt"
 import "regexp"
 import "strings"
 
+// NonDeterminicstic PushDown Automata
 type NPDA struct {
 	start   Set
 	reject  Set
@@ -14,7 +15,7 @@ type NPDA struct {
 	rules   NPRuleBook
 }
 
-//Returns new Non-deterministic Pushdown Automata
+// Returns new Non-deterministic Pushdown Automata
 func NewNPDA(start, reject, current, states, accept Set, stack *Stack, rules NPRuleBook) *NPDA {
 	return &NPDA{start: start, reject: reject, current: current, states: states, accept: accept, stack: stack, rules: rules}
 }
@@ -31,18 +32,18 @@ func (n *NPDA) String() string {
 	return "Current state: " + n.current.String() + "\nState of the stack: " + n.stack.String()
 }
 
-//Whether the string so far is part of the language.
+// Whether the string so far is part of the language.
 func (n *NPDA) Accepting() bool {
 	return !(n.accept.Intersection(n.current).Cardinality() != 0)
 }
 
-//Whether the string so far is not part of the language.
+// Whether the string so far is not part of the language.
 func (n *NPDA) Rejecting() bool {
 	return n.reject.Intersection(n.current).Cardinality() != 0
 }
 
-//Process a single character at a time and changes
-//the state of the machine accordingly.
+// Process a single character at a time and changes
+// the state of the machine accordingly.
 func (n *NPDA) ReadCharacter(char string) {
 	stackTop, err := n.stack.Peek()
 	if !err {
@@ -114,7 +115,7 @@ func (n *NPDA) ReadCharacter(char string) {
 	n.stack.PushString(str)
 }
 
-//Gets a string and process it one character at a time.
+// Gets a string and process it one character at a time.
 func (n *NPDA) ReadString(word string) {
 	for index, char := range word {
 		if n.Rejecting() {
@@ -125,13 +126,13 @@ func (n *NPDA) ReadString(word string) {
 	}
 }
 
-//Returns the string representation of stack.
-//The format is '[' member1 ',' member2 ',' ... ']'
+// Returns the string representation of stack.
+// The format is '[' member1 ',' member2 ',' ... ']'
 func (n *NPDA) GetStackAsString() string {
 	return n.stack.String()
 }
 
-//Returns the stack of the machine.
+// Returns the stack of the machine.
 func (n *NPDA) GetStack() Stack {
 	return *(n.stack)
 }
