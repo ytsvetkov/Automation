@@ -96,7 +96,7 @@ func (d DPRuleBook) GetFromState(from string) [][4]string {
 
 //Returns slice of posible state-push tuples, which are
 //reachable with the given transition state. Because
-// this is a deterministic machine, there is going to
+//this is a deterministic machine, there is going to
 //be only one element in it, or none. Always !
 func (d DPRuleBook) GetRuleEnd(from, with, pop string) (result [][2]string) {
 	if transitons, ok := d[from]; ok != false {

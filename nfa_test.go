@@ -27,15 +27,15 @@ func TestCreationNFA(t *testing.T) {
 		nfa.ReadCharacter(string(char))
 	}
 
-	if nfa.Accepting() {
+	if !nfa.Accepting() {
 		t.Error("Must be accepting!")
 	}
 
 	nfa.ReadCharacter(string("9"))
-	if nfa.Rejecting() {
+	if !nfa.Rejecting() {
 		t.Error("Must be rejectting!")
 	}
-	if nfa.Accepting() == false {
+	if nfa.Accepting() {
 		t.Error("Must not be accepting!")
 	}
 }

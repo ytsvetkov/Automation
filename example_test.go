@@ -1,7 +1,5 @@
 package Automation
 
-// import "fmt"
-
 // func ExampleRuleAndRulebook() {
 // 	a_to_b_with_q := NewRule("a", "q", "b")
 // 	c_to_d_with_theAlphabet := NewRules("c", "abcdefghijklmnopqrstuvwxyz", "d")

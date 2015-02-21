@@ -31,14 +31,18 @@ func (n *NPDA) String() string {
 	return "Current state: " + n.current.String() + "\nState of the stack: " + n.stack.String()
 }
 
+//Whether the string so far is part of the language.
 func (n *NPDA) Accepting() bool {
 	return !(n.accept.Intersection(n.current).Cardinality() != 0)
 }
 
+//Whether the string so far is not part of the language.
 func (n *NPDA) Rejecting() bool {
 	return n.reject.Intersection(n.current).Cardinality() != 0
 }
 
+//Process a single character at a time and changes
+//the state of the machine accordingly.
 func (n *NPDA) ReadCharacter(char string) {
 	stackTop, err := n.stack.Peek()
 	if !err {
@@ -75,11 +79,9 @@ func (n *NPDA) ReadCharacter(char string) {
 	n.current = NewSet()
 	for index, states := range rule {
 		for index_i, _ := range states {
-			// fmt.Println(rule)
 			n.current.Add(rule[index][index_i][0])
 		}
 	}
-	// fmt.Println(n.current)
 
 	str, err := n.stack.Pop()
 	if err != true {
@@ -112,6 +114,7 @@ func (n *NPDA) ReadCharacter(char string) {
 	n.stack.PushString(str)
 }
 
+//Gets a string and process it one character at a time.
 func (n *NPDA) ReadString(word string) {
 	for index, char := range word {
 		if n.Rejecting() {

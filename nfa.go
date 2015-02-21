@@ -20,7 +20,7 @@ func (n *NFA) String() string {
 
 //Whether the string so far is part of the language.
 func (d *NFA) Accepting() bool {
-	return !(d.accept.Intersection(d.current).Cardinality() != 0)
+	return d.accept.Intersection(d.current).Cardinality() != 0
 }
 
 //Returns the machine back in the 'start' state.
@@ -30,23 +30,29 @@ func (n *NFA) Restart() {
 
 //Whether the string so far is not part of the language.
 func (d *NFA) Rejecting() bool {
-	return d.accept.Contains(d.reject)
+	return d.current.Contains(d.reject)
 }
 
-//Reads a single character at a time.
+//Reads a single character at a time and process it.
 func (n *NFA) ReadCharacter(char string) {
 	if n.Rejecting() {
+		n.current.Add(n.reject)
 		return
 	}
+
 	a := n.current.Values()
 	n.current = NewSet()
 	for _, member := range a {
 		b := n.rules.GetRuleEnd(member, char)
 		n.current.AddSet(b)
 	}
+
+	if n.current.Cardinality() == 0 {
+		n.current.Add(n.reject)
+	}
 }
 
-//Reads string.
+//Reads strings and process it one character at a time.
 func (n *NFA) ReadString(word string) {
 	for _, char := range word {
 		if n.Rejecting() {

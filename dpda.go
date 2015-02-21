@@ -36,6 +36,7 @@ func (d *DPDA) Rejecting() bool {
 	return d.current == d.reject
 }
 
+//Process of a single character at a time.
 func (d *DPDA) ReadCharacter(char string) {
 	stackTop, err := d.stack.Peek()
 	pop := true
@@ -65,6 +66,8 @@ func (d *DPDA) ReadCharacter(char string) {
 	}
 
 }
+
+//Gets a string and process it a single character at a time.
 func (d *DPDA) ReadString(word string) {
 	for _, char := range word {
 		if d.Rejecting() {
