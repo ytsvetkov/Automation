@@ -23,7 +23,7 @@ Documentation and examples are available at
 * Mealy machine
 
 ##Notes
-This is some of the abreviation used within the documentation and the library itself. 
+This is some of the abbreviation used within the documentation and the library itself. 
 * DFA - Deterministic Finite Automata
 * NFA - NonDeterministic Finite Automata
 * DPDA - Deterministic Pushdown Automata
